@@ -22,11 +22,11 @@ class Servidor_Base_Datos
 	}
 	public function consulta($consulta)
 	{
-		$this->resultado = mysql_query($consulta,$this->descriptor);
+		return mysql_query($consulta,$this->descriptor);
 	}
-	public function extraer_registro()
+	public function extraer_registro($resultado)
 	{
-		if ($fila = mysql_fetch_array($this->resultado,MYSQL_ASSOC)) {
+		if ($fila = mysql_fetch_array($resultado,MYSQL_ASSOC)) {
 			return $fila;
 		} else {
 			return false;
