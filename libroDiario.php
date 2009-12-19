@@ -38,7 +38,30 @@
     <td class="shadow_left">&nbsp;</td>
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="body_content" align="center"><strong>Aquí metemos toda la rutina para sacar el libro de diario!</strong> <br />
+        <td class="body_content" align="left"><strong>
+
+		<table width="200" border="0">
+		  <?php  
+		        include ("conexion.php");
+				include ("funciones.php");
+                $res = $usuario->consulta("SELECT * FROM libro_diario");
+				while($ldiario=$usuario->extraer_registro($res)){
+					$fecha = cambiarFormatoFecha($ldiario["fecha_ldiario"]);
+					echo "<tr>";
+					echo "<td>".$fecha."</td><td>-".$ldiario["id_ldiario"]."-</td>";
+					echo "</tr>";
+					$datos = consultarMovimiento($ldiario["id_ldiario"],$usuario);
+					$i = count($datos);
+					echo $i;
+					//for ($n =0; $i-1; $n++){
+					//echo "<tr>";
+					//echo $datos[n];
+					//echo "</tr>";
+					//}
+				}
+          ?>
+          </table>
+          </strong> <br />
           <br /></td>
       </tr>
     </table></td>
