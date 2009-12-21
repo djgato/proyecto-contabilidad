@@ -27,5 +27,41 @@ function consultarMovimiento ($id_ldiario, $usuario){
 	$datos[]="";
 	return $datos;
 }
-	
+
+function balanceo ($tipoCuenta){
+	$res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = ".$tipoCuenta."");
+	$cuentas[] = "";
+	while($cuenta=$usuario->extraer_registro($res)){
+	$debe[] = "";
+	$haber[] = "";
+	$id_cuenta = $cuenta["id_cuenta"];
+	$nombre_cuenta = $cuenta["nombre_cuenta"];
+	$res1 =  $usuario->consulta("SELECT * FROM movimiento WHERE id_cuenta_movimiento = $id_cuenta");
+		while($mov = $usuario->extraer_registro($res1)){
+			if ($mov["columna_movimiento"]=="d"){
+				$debe[]= $mov["monto_movimiento"];
+				}
+			else {
+				$haber[]= $mov["monto_movimiento"];
+				}
+		}
+		$total = sumarColumnas ($debe,$haber,$tipoCuenta);
+}
+}
+function sumarColumnas ($debe,$haber,$tipoCuenta){
+	$totalDebe =0;
+	$totalHaber =0;
+	while( list($posicion,$valor) = each($debe)){
+		$totalDebe = $totalDebe + $valor;
+		}
+	while( list($posicion1,$valor1) = each($haber)){
+		$totalDebe = $totalDebe + $valor1;
+	}
+	if ($tipoCuenta == 'Activo'){
+		return $totalDebe - $totalHaber;
+		}
+	else {
+		return $totalHaber - $totalDebe;
+		}
+	}
 ?>

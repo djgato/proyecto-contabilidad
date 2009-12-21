@@ -1,8 +1,9 @@
 <?php
 include ("conexion.php");
 $cont = 0;
-echo '<table width="200" border="0">';
-$res =  $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Activo'");
+echo '<table width="200" border="0"> 
+<tr>';
+$res =  $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Ingreso'");
 while($cuenta = $usuario->extraer_registro($res)){		
         $debe[] = "";
 		$haber[] = "";
@@ -52,7 +53,7 @@ while($cuenta = $usuario->extraer_registro($res)){
 			echo'</tr>';
 			$cont = -1;
 			}
-			$cont++;
+			$cont = $cont++;
 	}
 echo '
 </tr>
