@@ -26,7 +26,7 @@ class Servidor_Base_Datos
 	}
 	public function extraer_registro($resultado)
 	{
-		$this->resultado  = $resultado;
+		$this->resultado =$resultado;
 		if ($fila = mysql_fetch_array($this->resultado,MYSQL_ASSOC)) {
 			return $fila;
 		} else {

@@ -38,7 +38,13 @@
     <td class="shadow_left">&nbsp;</td>
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="body_content" align="center"><strong>Toda la rutina y resultado para sacar el balance general!</strong> <br />
+        <td class="body_content" align="center"><strong>
+         <?php  
+		        include ("conexion.php");
+				include ("funciones.php");
+                
+          ?>
+        </strong> <br />
           <br /></td>
       </tr>
     </table></td>
