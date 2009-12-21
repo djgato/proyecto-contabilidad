@@ -51,13 +51,11 @@
 					echo "<td>".$fecha."</td><td>-".$ldiario["id_ldiario"]."-</td>";
 					echo "</tr>";
 					$datos = consultarMovimiento($ldiario["id_ldiario"],$usuario);
-					$i = count($datos);
-					echo $i;
-					//for ($n =0; $i-1; $n++){
-					//echo "<tr>";
-					//echo $datos[n];
-					//echo "</tr>";
-					//}
+					while( list($posicion,$valor) = each($datos)){
+					echo "<tr>";
+					echo $valor;
+					echo "</tr>";
+					}
 				}
           ?>
           </table>
