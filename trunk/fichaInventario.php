@@ -38,8 +38,39 @@
     <td class="shadow_left">&nbsp;</td>
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="body_content" align="center"><strong>Aqui le ponemos que si un cobmo box para que diga que producto quiere
-        ver y a partir de ahi le mostramos toda la info que quiera</strong> <br />
+
+
+        <td class="body_content" align="center"><strong>
+
+
+
+	<table width="200" border="0">
+		  <?php  
+
+//----------------------------------------CODIGO INVENTARIO-----------------------------------------------
+		        include ("conexion.php");
+				include ("funciones.php");
+                $res = $usuario->consulta("SELECT * FROM libro_diario");
+				while($ldiario=$usuario->extraer_registro($res)){
+					$fecha = cambiarFormatoFecha($ldiario["fecha_ldiario"]);
+					echo "<tr>";
+					echo "<td>".$fecha."</td><td>-".$ldiario["id_ldiario"]."-</td>";
+					echo "</tr>";
+					$datos = consultarMovimiento($ldiario["id_ldiario"],$usuario);
+					while( list($posicion,$valor) = each($datos)){
+					echo "<tr>";
+					echo $valor;
+					echo "</tr>";
+					}
+				}
+
+//----------------------------------------CODIGO INVENTARIO-----------------------------------------------
+		?>
+          </table>
+
+
+
+	</strong> <br />
           <br /></td>
       </tr>
     </table></td>
