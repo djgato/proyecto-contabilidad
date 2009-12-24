@@ -15,7 +15,7 @@
     <td class="header_column">
 	<table width="100%" border="0" cellspacing="10" cellpadding="0">
       <tr>
-        <td height="80" align="center" class="logo_area">Aqui ponemos un logo o un titulo</td>
+        <td height="80" align="center" class="logo_area"><br>Modelo Contable FoX C.A.</br></td>
       </tr>
     </table></td>
     <td class="shadow_right"></td>
