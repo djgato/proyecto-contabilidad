@@ -1,0 +1,1 @@
+ <?php echo "Nombre del activo: <input name='nombre' type='text' /> | Precio: <input name='precio' type='text' /> | Depreciable?: <input name='dep' type='checkbox' onchange='activarDep()' /> <div id='depre'></div>"; ?>

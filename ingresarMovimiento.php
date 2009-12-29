@@ -38,8 +38,19 @@
     <td class="shadow_left">&nbsp;</td>
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="body_content" align="center"><strong>aqui esta el meollo mas meollo de la vaina ... ingresar los movimientos!</strong> <br />
-          <br /></td>
+        <td class="body_content" align="center"><strong>Acciones Disponibles: 
+        <select name="accion" id="accion" onchange="consultarAccion()" >
+        	<option value='-' >---Seleccione una Accion---</option>
+            <option value='compra' >Compra</option>
+            <option value='venta' >Venta</option>
+            <option value='prestamo' >Solicitud de Prestamo</option>
+            <option value='cobro' >Cobro de Cuenta</option>
+            <option value='pago' >Pago de Cuenta</option>
+        </select></strong> <br />
+          <br />
+          <div id="primeraSeleccion"></div>
+          <div id="segundaSeleccion"></div>
+          <div id="terceraSeleccion"></div> </td>
       </tr>
     </table></td>
     <td class="shadow_right">&nbsp;</td>
