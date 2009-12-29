@@ -6,6 +6,7 @@
 <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/prototype-1.6.0.3.js"> </script>
 <script type="text/javascript" src="js/conta_JS.js"> </script>
+<script type="text/javascript" src="contabilidad_js.js"> </script>
 </head>
 
 <body>
@@ -40,35 +41,28 @@
       <tr>
 
 
-        <td class="body_content" align="center"><strong>
-
-
-
+        <td class="body_content" align="center"><strong>Seleccione un Producto a Consultar<br><br>
 	<table width="200" border="0">
     
-    <select name="productos" size="1">
-    <option selected="selected" value="1">Escoja un producto</option>
+    <select name="productos" size="1" onchange="Inventario(this.value)">
+    <option selected="selected" value="null">---producto---</option>
 		  <?php  
 
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
 
 		    include ("conexion.php");
-			include ("funciones.php");
+			//include ("Inventario-Tabla.php");
 			$flag = 0;
 			$producto[]= " ";
 			$res = $usuario->consulta("SELECT * FROM producto");
-			$contador = 2;
-			
-				while($inventario=$usuario->extraer_registro($res)){
-				echo'<option value ='.$contador.'>'.$inventario["nombre_producto"].'</option>';
-						$contador++;
-				}
+				while($inventario=$usuario->extraer_registro($res))
+				echo'<option value ='.$inventario["nombre_producto"].'>'.$inventario["nombre_producto"].'</option>';
 			
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
 		?>
         </select>
           </table>
-
+		<div id="libroInventario"><b>Inventario</b></div>
 
 
 	</strong> <br />
