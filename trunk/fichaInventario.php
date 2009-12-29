@@ -45,37 +45,28 @@
 
 
 	<table width="200" border="0">
+    
+    <select name="productos" size="1">
+    <option selected="selected" value="1">Escoja un producto</option>
 		  <?php  
 
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
 
-		        include ("conexion.php");
+		    include ("conexion.php");
 			include ("funciones.php");
 			$flag = 0;
 			$producto[]= " ";
 			$res = $usuario->consulta("SELECT * FROM producto");
-
+			$contador = 2;
+			
 				while($inventario=$usuario->extraer_registro($res)){
-
-					for ($i=0; $i <= count ($inventario); $i++) {
-    						if ($producto[$i]== $inventario)
-							$flag = 5;
-					}
-
-					if ($flag==0)
-						$producto[]=$inventario;
+				echo'<option value ='.$contador.'>'.$inventario["nombre_producto"].'</option>';
+						$contador++;
 				}
-				
-
-    				echo "<select name='Productos' class='botones' size = 1>";
-
-    				while( list($posicion,$valor) = each($producto)){
-        				echo "<option value='id_producto'>$fila[nombre_producto]</option>";
-    				}
-    				echo "</select>";
-
+			
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
 		?>
+        </select>
           </table>
 
 
