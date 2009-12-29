@@ -48,21 +48,31 @@
 		  <?php  
 
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
+
 		        include ("conexion.php");
-				include ("funciones.php");
-                $res = $usuario->consulta("SELECT * FROM libro_diario");
-				while($ldiario=$usuario->extraer_registro($res)){
-					$fecha = cambiarFormatoFecha($ldiario["fecha_ldiario"]);
-					echo "<tr>";
-					echo "<td>".$fecha."</td><td>-".$ldiario["id_ldiario"]."-</td>";
-					echo "</tr>";
-					$datos = consultarMovimiento($ldiario["id_ldiario"],$usuario);
-					while( list($posicion,$valor) = each($datos)){
-					echo "<tr>";
-					echo $valor;
-					echo "</tr>";
+			include ("funciones.php");
+			$flag = 0;
+			$producto[]= " ";
+			$res = $usuario->consulta("SELECT * FROM producto");
+
+				while($inventario=$usuario->extraer_registro($res)){
+
+					for ($i=0; $i <= count ($inventario); $i++) {
+    						if ($producto[$i]== $inventario)
+							$flag = 5;
 					}
+
+					if ($flag==0)
+						$producto[]=$inventario;
 				}
+				
+
+    				echo "<select name='Productos' class='botones' size = 1>";
+
+    				while( list($posicion,$valor) = each($producto)){
+        				echo "<option value='id_producto'>$fila[nombre_producto]</option>";
+    				}
+    				echo "</select>";
 
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
 		?>
