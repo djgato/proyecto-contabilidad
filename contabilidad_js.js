@@ -11,16 +11,32 @@ if (xmlhttp==null)
 var url="Inventario-Tabla.php";
 url=url+"?q="+str;
 url=url+"&sid="+Math.random();
-xmlhttp.onreadystatechange=stateChanged;
+xmlhttp.onreadystatechange=stateChanged ("libroInventario");
 xmlhttp.open("GET",url,true);
 xmlhttp.send(null);
 }
 
-function stateChanged()
+function Accion(str)
+{
+xmlhttp=GetXmlHttpObject();
+if (xmlhttp==null)
+  {
+  alert ("Your browser does not support AJAX!");
+  return;
+  }
+var url="Accion.php";
+url=url+"?q="+str;
+url=url+"&sid="+Math.random();
+xmlhttp.onreadystatechange=stateChanged("Seleccion");
+xmlhttp.open("GET",url,true);
+xmlhttp.send(null);
+}
+
+function stateChanged(div_id)
 {
 if (xmlhttp.readyState==4)
   {
-  document.getElementById("libroInventario").innerHTML=xmlhttp.responseText;
+  document.getElementById(div_id).innerHTML=xmlhttp.responseText;
   }
 }
 
