@@ -1,9 +1,16 @@
 <?php
 include ("conexion.php");
+<<<<<<< .mine
+$producto_nombre = $_GET["q"];
+if ($producto_nombre != "null"){
+echo '<table width="200" border="1">
+		<tr>
+=======
 $producto_nombre = $_GET["q"];
 if ($producto_nombre != "null"){
 echo '<table width="200" border="1">';
 echo '<tr>
+>>>>>>> .r21
 		<td align="center" width="25%">Descripcion</td>
 		<td colspan="3" align="center" width="25%">Entrada</td>
 		<td colspan="3" align="center" width="25%">Salida</td>
@@ -14,8 +21,6 @@ echo '<tr>
 				  <td>Cant</td> <td>CU</td> <td>TOTAL</td>
 				  <td>Cant</td> <td>CU</td> <td>TOTAL</td>
 	 </tr>';
-	 	
-$producto_nombre = $_GET["q"];
 
 	$res =  $usuario->consulta("SELECT * 
 							   FROM producto 
@@ -33,6 +38,8 @@ $producto_nombre = $_GET["q"];
 								FROM inventario_transaccion I 
 								WHERE I.id_finventario= '$id1_inv'");
 	
+			$str=""; // AQUI GUARDO TODA LA INFO QUE IMPRIMO LATER
+			
 			while ($id2 = $usuario->extraer_registro($res2)){
 				$id_transc = $id2["id_transaccion"];
 				
@@ -40,27 +47,43 @@ $producto_nombre = $_GET["q"];
 										  FROM transaccion
 										  WHERE id_transaccion = '$id_transc'");
 				$transaccion = $usuario->extraer_registro($res3);
+				$total = $transaccion["unidades_transaccion"] * $transaccion["precio_unidad"];
 				
-echo '<tr>
-		<td>'.$transaccion["tipo_transaccion"].'</td>';
-		$total = $transaccion["unidades_transaccion"] * $transaccion["precio_unidad"];
 				if ($transaccion["tipo_transaccion"] == "Compra"){
-					echo '<td>'.$transaccion["unidades_transaccion"].'</td>';
-					echo '<td>'.$transaccion["precio_unidad"].'</td>';
-					echo '<td>'.$total.'</td>';
-					echo '<td></td> <td></td> <td></td>';
+					$str .= '<tr>';
+					$str .= '<td>'.$transaccion["tipo_transaccion"].'</td>';
+					$str .= '<td>'.$transaccion["unidades_transaccion"].'</td>';
+					$str .= '<td>'.$transaccion["precio_unidad"].'</td>';
+					$str .= '<td>'.$total.'</td>';
+					$str .= '<td></td> <td></td> <td></td>';
 				}
 				else if ($transaccion["tipo_transaccion"] == "Venta"){
-					echo '<td></td> <td></td> <td></td>';
-					echo '<td>'.$transaccion["unidades_transaccion"].'</td>';
-					echo '<td>'.$transaccion["precio_unidad"].'</td>';
-					echo '<td>'.$total.'</td>';
-				}					
-				echo '<td>'.$id["cant_exist"].'</td>';
-				echo '<td>'.$id["cu_exist"].'</td>';
-				echo '<td>'.$id["cant_exist"]*$id["cu_exist"].'</td>';
-echo '</tr>';						
+					$str .= '<tr>';
+					$str .= '<td>'.$transaccion["tipo_transaccion"].'</td>';
+					$str .= '<td></td> <td></td> <td></td>';
+					$str .= '<td>'.$transaccion["unidades_transaccion"].'</td>';
+					$str .= '<td>'.$transaccion["precio_unidad"].'</td>';
+					$str .= '<td>'.$total.'</td>';
+				}
+				if ($transaccion["tipo_transaccion"] == "Existencia"){
+					if ($str != ""){
+						$str .= '<td>'.$transaccion["unidades_transaccion"].'</td>';
+						$str .= '<td>'.$transaccion["precio_unidad"].'</td>';
+						$str .= '<td>'.$total.'</td>';
+						$str .= '</tr>';
+					}
+					else {
+						$str .= '<tr>';
+						$str .= '<td>Inventario Inivicial</td>';
+						$str .= '<td></td> <td></td> <td></td> <td></td> <td></td> <td></td>';
+						$str .= '<td>'.$transaccion["unidades_transaccion"].'</td>';
+						$str .= '<td>'.$transaccion["precio_unidad"].'</td>';
+						$str .= '<td>'.$total.'</td>';
+						$str .= '</tr>';
+					}
+				}						
 			}
+			echo $str;
 echo '</table>';
 }
 ?>
