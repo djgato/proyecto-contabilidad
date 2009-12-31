@@ -11,38 +11,16 @@ if (xmlhttp==null)
 var url="Inventario-Tabla.php";
 url=url+"?q="+str;
 url=url+"&sid="+Math.random();
-<<<<<<< .mine
 xmlhttp.onreadystatechange=stateChanged; //NO SE PORQ COÑO DE LA MADRE SI CAMBIO LA FUNCION
 xmlhttp.open("GET",url,true);			 //stateChanged Y LE PASO EL NOMBRE DEL DIV COMO UN
 xmlhttp.send(null);						 //PARAMETRO LA VAINA SE MUERE, DEJA DE FUNCIONAR :S
-=======
-xmlhttp.onreadystatechange=stateChanged ("libroInventario");
-xmlhttp.open("GET",url,true);
-xmlhttp.send(null);
->>>>>>> .r21
 }
 
-function Accion(str)
-{
-xmlhttp=GetXmlHttpObject();
-if (xmlhttp==null)
-  {
-  alert ("Your browser does not support AJAX!");
-  return;
-  }
-var url="Accion.php";
-url=url+"?q="+str;
-url=url+"&sid="+Math.random();
-xmlhttp.onreadystatechange=stateChanged("Seleccion");
-xmlhttp.open("GET",url,true);
-xmlhttp.send(null);
-}
-
-function stateChanged(div_id)
+function stateChanged()
 {
 if (xmlhttp.readyState==4)
   {
-  document.getElementById(div_id).innerHTML=xmlhttp.responseText;
+  document.getElementById("libroInventario").innerHTML=xmlhttp.responseText;
   }
 }
 
