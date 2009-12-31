@@ -1,16 +1,9 @@
 <?php
 include ("conexion.php");
-<<<<<<< .mine
 $producto_nombre = $_GET["q"];
 if ($producto_nombre != "null"){
 echo '<table width="200" border="1">
 		<tr>
-=======
-$producto_nombre = $_GET["q"];
-if ($producto_nombre != "null"){
-echo '<table width="200" border="1">';
-echo '<tr>
->>>>>>> .r21
 		<td align="center" width="25%">Descripcion</td>
 		<td colspan="3" align="center" width="25%">Entrada</td>
 		<td colspan="3" align="center" width="25%">Salida</td>
