@@ -6,6 +6,7 @@
 <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/prototype-1.6.0.3.js"> </script>
 <script type="text/javascript" src="js/conta_JS.js"> </script>
+<script type="text/javascript" src="contabilidad_js.js"> </script>
 </head>
 
 <body>
@@ -39,7 +40,7 @@
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td class="body_content" align="left"><strong>Acciones Disponibles: 
-        <select name="accion" id="accion" onchange="consultarAccion()" >
+        <select name="accion" id="accion" onchange="Accion(this.value)" >
         	<option value='-' >---Seleccione una Accion---</option>
             <option value='compra' >Compra</option>
             <option value='venta' >Venta</option>
@@ -48,9 +49,7 @@
             <option value='pago' >Pago de Cuenta</option>
         </select></strong> <br />
           <br />
-          <div id="primeraSeleccion"></div>
-          <div id="segundaSeleccion"></div>
-          <div id="terceraSeleccion"></div> </td>
+          <div id="Seleccion"></div> </td>
       </tr>
     </table></td>
     <td class="shadow_right">&nbsp;</td>
