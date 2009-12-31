@@ -11,9 +11,15 @@ if (xmlhttp==null)
 var url="Inventario-Tabla.php";
 url=url+"?q="+str;
 url=url+"&sid="+Math.random();
+<<<<<<< .mine
+xmlhttp.onreadystatechange=stateChanged; //NO SE PORQ COÑO DE LA MADRE SI CAMBIO LA FUNCION
+xmlhttp.open("GET",url,true);			 //stateChanged Y LE PASO EL NOMBRE DEL DIV COMO UN
+xmlhttp.send(null);						 //PARAMETRO LA VAINA SE MUERE, DEJA DE FUNCIONAR :S
+=======
 xmlhttp.onreadystatechange=stateChanged ("libroInventario");
 xmlhttp.open("GET",url,true);
 xmlhttp.send(null);
+>>>>>>> .r21
 }
 
 function Accion(str)
@@ -53,4 +59,4 @@ if (window.ActiveXObject)
   return new ActiveXObject("Microsoft.XMLHTTP");
   }
 return null;
-}// JavaScript Document
+}
