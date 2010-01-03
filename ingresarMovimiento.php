@@ -39,7 +39,7 @@
     <td class="shadow_left">&nbsp;</td>
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="body_content" align="left"><strong>Acciones Disponibles: 
+        <td class="body_content" align="center"><strong>Acciones Disponibles: 
         <select name="accion" id="accion" onchange="Accion(this.value)" >
         	<option value='-' >---Seleccione una Accion---</option>
             <option value='compra' >Compra</option>
@@ -49,8 +49,8 @@
             <option value='pago' >Pago de Cuenta</option>
         </select></strong> <br />
           <br />
-          <div id="Seleccion"></div> </td>
-      </tr>
+          <div id="Seleccion"><strong>Acciones</strong></div></td>
+	  </tr>
     </table></td>
     <td class="shadow_right">&nbsp;</td>
   </tr>

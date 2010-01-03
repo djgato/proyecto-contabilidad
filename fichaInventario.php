@@ -51,9 +51,6 @@
 //----------------------------------------CODIGO INVENTARIO-----------------------------------------------
 
 		    include ("conexion.php");
-			//include ("Inventario-Tabla.php");
-			$flag = 0;
-			$producto[]= " ";
 			$res = $usuario->consulta("SELECT * FROM producto");
 				while($inventario=$usuario->extraer_registro($res))
 				echo'<option value ='.$inventario["nombre_producto"].'>'.$inventario["nombre_producto"].'</option>';
