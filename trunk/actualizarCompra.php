@@ -1,5 +1,44 @@
-<?php echo "<strong>Que desea Comprar? </strong><select name='compra' id='compra' onchange='consultarCompra_2()' >
-        	<option value='-' >---Seleccione una Opcion---</option>
-            <option value='activo' >Activo</option>
-            <option value='producto' >Producto</option>
-            </select>"; ?>
+<html>
+<body>
+<script type="text/javascript" src="js/prototype-1.6.0.3.js"> </script>
+<script type="text/javascript" src="js/conta_JS.js"> </script>
+<script type="text/javascript" src="contabilidad_js.js"> </script>
+
+<?php
+include ("conexion.php");
+$accion = $_GET["q"];
+
+if ($accion =='producto'){
+		$res = $usuario->consulta("SELECT * FROM producto");
+		while($producto=$usuario->extraer_registro($res))
+		echo '<input name="producto" type="radio" value='.$producto["nombre_producto"].' 		onclick="Compra(this.value)">'.$producto["nombre_producto"];
+		echo '<input name="producto" type="radio" value="Producto Nuevo" 
+			onclick="Compra(this.value)">Agregar Producto'; 
+}
+else if($accion =='activo'){
+	echo '<tr><td><strong>En construccion...Prueba con Producto ;)</strong></td></tr>';
+}
+else {
+	echo '<form method ="post" action="ingresarMovimiento.php">
+		  	<table width="200" border="0">';
+	if ($accion == 'Producto Nuevo'){
+		echo 'Nombre Del Nuevo Producto<br><input type="texto" name="new"><br>';	
+	}
+	else{
+		echo 
+	  		'<tr> 
+				<td colspan="2" align="center"><strong>'.$accion.'</strong></td> 
+			 </tr>';
+	}
+		echo '<tr>
+				<td align="center">Cant.<input type"text" name="cant"></td>
+				<td align="center">CU<input type"text" name="CU"></td> 
+			  </tr> </table>';
+			
+		echo '<input type="submit" name="Enviar" value="Enviar">';
+		echo '</form>';
+}
+?>
+
+</body>
+</html>
