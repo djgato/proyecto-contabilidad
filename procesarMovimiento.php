@@ -31,5 +31,9 @@ if ($operacion == "compraActivo"){
 
 
 }
+else if ($operacion == "compraProducto"){
+	
+	
+	}
 
 ?>
