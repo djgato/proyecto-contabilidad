@@ -26,7 +26,7 @@ else if($accion =='activo'){
  </form>";
 }
 else {
-	echo '<form method ="post" action="ingresarMovimiento.php">
+	echo '<form method ="post" action="compraProducto.php">
 		  	<table width="200" border="0">';
 	if ($accion == 'Producto Nuevo'){
 		echo 'Nombre Del Nuevo Producto<br><input type="texto" name="new"><br>';	
