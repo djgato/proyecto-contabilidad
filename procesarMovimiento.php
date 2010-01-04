@@ -47,10 +47,47 @@ if ($operacion == "compraActivo"){
 	if (!($credito)){ //la compra fue de contado	
 		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$monto','h');");
 	}
-	else {
-		
+	else { //compra a credito
+		$por = $_POST['porcen'];
+		$monto_credito = ($monto * $por)/100;
+		$monto_banco = $monto - $monto_credito;
+		//creo la cuenta "otras cuentas por pagar"
+		$nc_porpagar = "Otras Cuentas Por Pagar (".$nombre.")";
+		$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('','$nc_porpagar','Pasivo');");
+		$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta = '$nc_porpagar'");
+		$res = $usuario->extraer_registro($res);
+		$id_cporpagar = $res['id_cuenta']; //id de la cuenta por pagar!
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$monto_banco','h');");
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_cporpagar','$id_ldiario','$monto_credito','h');");
 		}
-
+// veo si es depreciable o no depreciable
+	$depre = false;
+	if (isset($_POST['dep']))
+	$depre = true;
+	if ($depre){
+		$tiempo_dep_men = $_POST['tiempo'] * 12;
+		$dep_mensual = $monto/$tiempo_dep_men;
+		//creo la cuenta de dep ac
+		$nc_depAc = "Dep. Ac. ".$nombre;
+		$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('','$nc_depAc','Activo');");
+		$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta = '$nc_depAc'");
+		$res = $usuario->extraer_registro($res);
+		$id_cdepAc = $res['id_cuenta']; //id de la cuenta de dep ac!
+		//creo la cuenta gastos por depreciacion
+		$nc_gDep = "Gastos por Dep. de ".$nombre;
+		$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('','$nc_gDep','Egreso');");
+		$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta = '$nc_gDep'");
+		$res = $usuario->extraer_registro($res);
+		$id_cgDep = $res['id_cuenta'];
+		//genero el gasto asociado
+		$res = $usuario->consulta("INSERT INTO gasto_asociado (id_gasto_asociado,monto_gasto,pagos_restantes) VALUES 	('','$dep_mensual','$tiempo_dep_men');");
+		$id_gastoAsociado =$usuario->extraer_registro($usuario->consulta("SELECT id_gasto_asociado FROM gasto_asociado ORDER BY  id_gasto_asociado DESC Limit 1"));
+		// Hago las asociaciones!
+		//primero la de Dep Ac.
+		$res = $usuario->consulta("INSERT INTO gasto_cuenta (columna_gasto,id_cuenta_gasto,id_gasto_asociado) VALUES 	('h','$id_cdepAc','$id_gastoAsociado');");
+		//ahora con gasto pro dep 
+		$res = $usuario->consulta("INSERT INTO gasto_cuenta (columna_gasto,id_cuenta_gasto,id_gasto_asociado) VALUES 	('d','$id_cgDep','$id_gastoAsociado');");	
+		}
 }
 else if ($operacion == "compraProducto"){
 	
