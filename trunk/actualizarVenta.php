@@ -5,23 +5,20 @@
 <script type="text/javascript" src="contabilidad_js.js"> </script>
 
 <?php 
+$tipo = $_POST['opt'];
 include ("conexion.php");
-$accion = $_GET["q"];
-
-if ($accion =='producto'){
-		$res = $usuario->consulta("SELECT * FROM producto");
+$res = $usuario->consulta("SELECT * FROM producto");
+if ($tipo == '-'){
+		echo "<br>Productos Disponibles: <select name='productos' id='productos' onchange='seleccionProducto()'>";
+		echo"Productos Existentes: <option value='-'>---Seleccione una Opcion---</option>";	
 		while($producto=$usuario->extraer_registro($res))
-		echo '<input name="producto" type="radio" value='.$producto["nombre_producto"].' onclick="Venta(this.value)">'.$producto["nombre_producto"];
+			echo"<option value=".$producto['nombre_producto'].">".$producto['nombre_producto']."</option>";		
 }
-else if($accion =='activo'){
-	echo '<tr><td><strong>En construccion...Prueba con Producto ;)</strong></td></tr>';
-}
-else
-{
+else {
 		echo '<form method ="post" action="ingresarMovimiento.php">
 		  	<table width="200" border="0">
 	  		<tr> 
-				<td colspan="2" align="center"><strong>'.$accion.'</strong></td> 
+				<td colspan="2" align="center"><strong>'.$tipo.'</strong></td> 
 			 </tr>
 			 <tr>
 				<td align="center">Cant.<input type"text" name="cant"></td>
