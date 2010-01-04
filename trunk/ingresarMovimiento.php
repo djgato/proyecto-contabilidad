@@ -41,7 +41,7 @@
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td class="body_content" align="left">
-        <form>
+        <form action='procesarMovimiento.php' method='post'>
         <table>
 		<tr><td><strong>Fecha del movimiento: </strong></td><td><td>
 				<select name="year">
@@ -110,7 +110,7 @@
 					<option value="30">30</option>
 					<option value="31">31</option>
 				</select>			
-	</td></tr></table></form>
+	</td></tr></table>
         <br /><strong>Acciones Disponibles: 
         <select name="accion" id="accion" onchange="consultarAccion()" >
         	<option value='-' >---Seleccione una Accion---</option>
@@ -128,6 +128,7 @@
           <div id="terceraSeleccion"></div>
           </td>
 	  </tr>
+      </form>
     </table></td>
     <td class="shadow_right">&nbsp;</td>
   </tr>
