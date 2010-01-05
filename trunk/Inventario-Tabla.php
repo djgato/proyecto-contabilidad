@@ -1,6 +1,6 @@
 <?php
 include ("conexion.php");
-$producto_nombre = $_GET["q"];
+$producto_nombre = $_GET['q'];
 if ($producto_nombre != "null"){
 echo '<table width="200" border="1">
 		<tr>
