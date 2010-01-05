@@ -182,6 +182,12 @@ else if ($operacion == "compraProducto"){
 	$costo_unitario = $_POST['cu'];
 	$total = $_POST['cant'] * $_POST['cu'];
 	//ingreso la transaccion de compra
+	if ($_POST['product'] == "n"){//si el producto es nuevo le creo II
+			$usuario->consulta("INSERT INTO ficha_inventario (id_finventario,descripcion,fecha_inventario,id_producto_finventario) VALUES 	('','Existencia','$fecha','$id_producto');");
+	$id_finventario2 = $usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
+	$id_finventario2 = $id_finventario2['id_finventario'];
+		$usuario->consulta("INSERT INTO transaccion (id_transaccion,id_finventario_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad) VALUES 	('','$id_finventario2','II','0','0','0');");
+		}
 	$usuario->consulta("INSERT INTO transaccion (id_transaccion,id_finventario_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad) VALUES 	('','$id_finventario','Compra','$unidades','$total','$costo_unitario');");
 	if ($exist){
 		$exist = $usuario->extraer_registro($exist);
@@ -276,9 +282,13 @@ else if ($operacion == "ventaProducto"){
 	$nombreProd=$_POST['nombreProd'];
 	$nombreCuenta='Venta '.$nombreProd;
 	//inserto mi nueva cuenta Venta Producto ...
-	$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES ('','$nombreCuenta','Ingreso')");
-	$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta='$nombreCuenta'");
+	$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE '$nombreCuenta'");
 	$res = $usuario->extraer_registro($res);
+	if (!($res)){
+	$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES ('','$nombreCuenta','Ingreso')");
+	$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE '$nombreCuenta'");
+	$res = $usuario->extraer_registro($res);
+	}
 	$id_cuenta = $res['id_cuenta'];
 	
 	//inserto mi nueva cuenta IVA Venta ...
@@ -319,9 +329,11 @@ else if ($operacion == "ventaProducto"){
 		$res = $usuario->extraer_registro($res);
 		if (!($res)) {
 			$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES('','Cuenta por Cobrar','Activo')");
-			$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta='Cuenta por Cobrar'");
+			$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Cuenta por Cobrar'");
+			$res = $usuario->extraer_registro($res);
+			$id_porCobrar = $res['id_cuenta'];
 		}		
-		$id_porCobrar= $res['id_cuenta']; //id de la cuenta por cobrar!	
+		$id_porCobrar = $res['id_cuenta']; //id de la cuenta por cobrar!	
 		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES ('$id_banco','$id_ldiario','$monto_banco','d');");
 			$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES ('$id_porCobrar','$id_ldiario','$monto_credito','d');");
 	}

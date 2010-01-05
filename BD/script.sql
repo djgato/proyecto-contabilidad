@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS `proyecto_contabilidad`.`MOVIMIENTO` ;
 
 CREATE  TABLE IF NOT EXISTS `proyecto_contabilidad`.`MOVIMIENTO` (
   `id_cuenta_movimiento` INT NOT NULL ,
-  `id_ldiario_movimiento` INT NOT NULL ,
+  `id_ldiario_movimiento` INT DEFAULT NULL,
   `monto_movimiento` INT NOT NULL ,
   `columna_movimiento` VARCHAR(45) NOT NULL ,
   CONSTRAINT `fk_MOVIMIENTO_CUENTA`
