@@ -9,7 +9,7 @@ $tipo = $_POST['opt'];
 include ("conexion.php");
 $res = $usuario->consulta("SELECT * FROM producto");
 if ($tipo == '-'){
-		echo "<br>Productos Disponibles: <select name='productos' id='productos' onchange='seleccionProducto()'>";
+		echo "<br>Productos Disponibles: <select name='productos' id='productos' onchange='seleccionProducto_2()'>";
 		echo"Productos Existentes: <option value='-'>---Seleccione una Opcion---</option>";	
 		while($producto=$usuario->extraer_registro($res))
 			echo"<option value=".$producto['nombre_producto'].">".$producto['nombre_producto']."</option>";		
