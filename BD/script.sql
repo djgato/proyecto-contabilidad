@@ -97,13 +97,20 @@ DROP TABLE IF EXISTS `proyecto_contabilidad`.`TRANSACCION` ;
 
 CREATE  TABLE IF NOT EXISTS `proyecto_contabilidad`.`TRANSACCION` (
   `id_transaccion` INT NOT NULL AUTO_INCREMENT ,
+  `id_finventario_transaccion` INT NOT NULL ,
   `tipo_transaccion` VARCHAR(45) NOT NULL ,
   `unidades_transaccion` INT NOT NULL ,
   `total_transaccion` FLOAT NOT NULL ,
   `precio_unidad` FLOAT NOT NULL ,
-  PRIMARY KEY (`id_transaccion`) )
+  PRIMARY KEY (`id_transaccion`),
+  CONSTRAINT `fk_FICHA_INVENTARIO_TRANSACCION`
+    FOREIGN KEY (`id_finventario_transaccion` )
+    REFERENCES `proyecto_contabilidad`.`FICHA_INVENTARIO` (`id_finventario` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE INDEX `fk_FICHA_INVENTARIO_TRANSACCION` ON `proyecto_contabilidad`.`TRANSACCION`  (`id_finventario_transaccion` ASC) ;
 
 -- -----------------------------------------------------
 -- Table `proyecto_contabilidad`.`GASTO_ASOCIADO`
@@ -142,34 +149,6 @@ ENGINE = InnoDB;
 CREATE INDEX `fk_GASTO_CUENTA_CUENTA` ON `proyecto_contabilidad`.`GASTO_CUENTA` (`id_cuenta_gasto` ASC) ;
 
 CREATE INDEX `fk_GASTO_CUENTA_GASTO_ASOCIADO` ON `proyecto_contabilidad`.`GASTO_CUENTA` (`id_gasto_asociado` ASC) ;
-
-
--- -----------------------------------------------------
--- Table `proyecto_contabilidad`.`INVENTARIO_TRANSACCION`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_contabilidad`.`INVENTARIO_TRANSACCION` ;
-
-CREATE  TABLE IF NOT EXISTS `proyecto_contabilidad`.`INVENTARIO_TRANSACCION` (
-  `id_transaccion` INT NOT NULL ,
-  `id_finventario` INT NOT NULL ,
-  PRIMARY KEY (`id_transaccion`, `id_finventario`) ,
-  CONSTRAINT `fk_INVENTARIO_TRANSACCION_TRANSACCION`
-    FOREIGN KEY (`id_transaccion` )
-    REFERENCES `proyecto_contabilidad`.`TRANSACCION` (`id_transaccion` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_INVENTARIO_TRANSACCION_FICHA_INVENTARIO`
-    FOREIGN KEY (`id_finventario` )
-    REFERENCES `proyecto_contabilidad`.`FICHA_INVENTARIO` (`id_finventario` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_INVENTARIO_TRANSACCION_TRANSACCION` ON `proyecto_contabilidad`.`INVENTARIO_TRANSACCION` (`id_transaccion` ASC) ;
-
-CREATE INDEX `fk_INVENTARIO_TRANSACCION_FICHA_INVENTARIO` ON `proyecto_contabilidad`.`INVENTARIO_TRANSACCION` (`id_finventario` ASC) ;
-
-
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
