@@ -28,8 +28,8 @@ echo '<table width="200" border="1">
 	$id1_inv = $id1["id_finventario"];
 	
 	$res2 =  $usuario->consulta("SELECT * 
-								FROM inventario_transaccion I 
-								WHERE I.id_finventario= '$id1_inv'");
+								FROM transaccion 
+								WHERE id_finventario_transaccion= '$id1_inv'");
 	
 			$str=""; // AQUI GUARDO TODA LA INFO QUE IMPRIMO LATER
 			

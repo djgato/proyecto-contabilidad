@@ -2,8 +2,9 @@
 include ("conexion.php");
 include ("funciones.php");
 $operacion = $_POST['operacion'];
+echo '<tr><td>'.$operacion.'</td></tr>';
 //creo el libro de diario para esta fecha!
-$fecha = $_POST['year']."-".$_POST['month']."-".$_POST['day'];
+$fecha = $_POST["year"]."-".$_POST["month"]."-".$_POST["day"];
 $usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
 $id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
 $id_ldiario = $id['id_ldiario'];
@@ -90,8 +91,90 @@ if ($operacion == "compraActivo"){
 		}
 }
 else if ($operacion == "compraProducto"){
-	
-	
 	}
-
+	
+	
+	
+	
+	
+else if ($operacion == "ventaProducto"){
+	$cant=$_POST['cant'];
+	$cu=$_POST['CU'];
+	$total = $cant*$cu;
+	$iva= $total*(0.12);
+	$nombreProd=$_POST['nombreProd'];
+	$nombreCuenta='Venta '.$nombreProd;
+	//inserto mi nueva cuenta Venta Producto ...
+	$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('','$nombreCuenta','Ingreso')");
+	$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta='$nombreCuenta'");
+	$res = $usuario->extraer_registro($res);
+	$id_cuenta = $res['id_cuenta'];
+	
+	//inserto mi nueva cuenta IVA Venta ...
+	$res= $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'IVA Venta'");
+	if (!($res)) {
+		$usuario->consulta ("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES ('','IVA Venta','Pasivo')");
+	}
+	else {	
+		$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta='IVA Venta'");
+		$res = $usuario->extraer_registro($res);
+		$id_ivaVenta= $res['id_cuenta'];
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_ivaVenta','$id_ldiario','$iva','h');");
+	}
+	
+	//saco el id del banco
+		$res =$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'banco'");
+		$res = $usuario->extraer_registro($res);
+		$id_banco = $res['id_cuenta'];
+	//Saco el monto
+		$monto = $total + $iva;
+	//Veo si es a credito o de contado
+		$credito = false;
+		if (isset($_POST['credito']))
+		$credito = true;
+		echo $credito;
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 		('$id_cuenta','$id_ldiario','$total','h');");
+		if (!($credito)){ //la compra fue de contado	
+			$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$monto','d');");
+		}
+		else { //compra a credito
+			$por = $_POST['porcen'];
+			$monto_credito = ($monto * $por)/100;
+			$monto_banco = $monto - $monto_credito;
+			
+			//creo la cuenta "cuentas por cobrar"
+			$res= $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Cuenta por Cobrar'");
+			if (!($res)) {
+				$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES('','Cuenta por Cobrar','Activo')");
+			}
+			else {	
+				$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta='Cuenta por Cobrar'");
+				$res = $usuario->extraer_registro($res);
+				$id_porCobrar= $res['id_cuenta']; //id de la cuenta por cobrar!
+				$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$monto_banco','d');");
+			$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_porCobrar','$id_ldiario','$monto_credito','d');");
+			}
+		}
+		//Inventario
+		$res=$usuario->consulta("SELECT * from producto WHERE nombre_producto='$nombreProd'");
+		$producto = $usuario->extraer_registro($res);
+		$id_prod = $producto["id_producto"];
+		$res =  $usuario->consulta("SELECT * 
+									FROM ficha_inventario 
+									WHERE id_producto_finventario= '$id_prod'");
+		$ficha = $usuario->extraer_registro($res);
+		$id_inv = $ficha["id_finventario"];		
+		$res=$usuario->consulta("SELECT MAX(id_transaccion) 
+								FROM transaccion 
+								WHERE tipo_transaccion='existencia' and
+								      id_finventario_transaccion= '$id_inv'");
+		$ultima_existencia = $usuario->extraer_registro($res);
+		$unidades = $ultima_existencia["unidades_transaccion"] - $cant;
+		$precio_uitario = $ultima_existencia["precio_unidad"] - $cu;
+		$total_transaccion = $unidades / $precio_unitario;
+		
+		$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Salida','$cant','$total','$cu,'$id_inv'");
+		$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Existencia','$unidades','$total_transaccion','$precio_unitario,'$id_inv'");
+		
+}
 ?>
