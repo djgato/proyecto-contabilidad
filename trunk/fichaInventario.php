@@ -45,23 +45,20 @@
 	<table width="200" border="0">
     
     <select name="productos" size="1" onchange="Inventario(this.value)">
-    <option selected="selected" value="null">---producto---</option>
+    <option selected="selected" value="null">---Seleccione un Producto---</option>
 		  <?php  
 
-//----------------------------------------CODIGO INVENTARIO-----------------------------------------------
+//--------------------------------CODIGO INVENTARIO----------------------------
 
 		    include ("conexion.php");
 			$res = $usuario->consulta("SELECT * FROM producto");
 				while($inventario=$usuario->extraer_registro($res))
 				echo'<option value ='.$inventario["nombre_producto"].'>'.$inventario["nombre_producto"].'</option>';
-			
-//----------------------------------------CODIGO INVENTARIO-----------------------------------------------
+//--------------------------------CODIGO INVENTARIO----------------------------
 		?>
         </select>
-          </table>
-		<div id="libroInventario"><b>Inventario</b></div>
-
-
+        <div id="libroInventario"><b>Inventario</b></div>
+	</table>
 	</strong> <br />
           <br /></td>
       </tr>
