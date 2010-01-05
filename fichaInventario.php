@@ -47,9 +47,7 @@
     <select name="productos" size="1" onchange="Inventario(this.value)">
     <option selected="selected" value="null">---Seleccione un Producto---</option>
 		  <?php  
-
 //--------------------------------CODIGO INVENTARIO----------------------------
-
 		    include ("conexion.php");
 			$res = $usuario->consulta("SELECT * FROM producto");
 				while($inventario=$usuario->extraer_registro($res))
