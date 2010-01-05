@@ -40,15 +40,15 @@
       <tr>
         <td class="body_content" align="left"><strong>
 
-		<table width="200" border="0">
-		  <?php  
+		<table width="100%" border="0">
+		  <?php 
 		        include ("conexion.php");
 				include ("funciones.php");
                 $res = $usuario->consulta("SELECT * FROM libro_diario");
 				while($ldiario=$usuario->extraer_registro($res)){
 					$fecha = cambiarFormatoFecha($ldiario["fecha_ldiario"]);
 					echo "<tr>";
-					echo "<td>".$fecha."</td><td>-".$ldiario["id_ldiario"]."-</td>";
+					echo "<td><U>".$fecha."</U></td><td align='center'><U>-".$ldiario["id_ldiario"]."-</U></td>";
 					echo "</tr>";
 					$datos = consultarMovimiento($ldiario["id_ldiario"],$usuario);
 					while( list($posicion,$valor) = each($datos)){
@@ -56,6 +56,7 @@
 					echo $valor;
 					echo "</tr>";
 					}
+					echo "<tr><td COLSPAN=4><hr /></td></tr>";
 				}
           ?>
           </table>
