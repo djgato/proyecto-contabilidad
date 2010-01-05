@@ -1,4 +1,5 @@
 <?php 
+
 function cambiarFormatoFecha($fecha){ 
     list($anio,$mes,$dia)=explode("-",$fecha); 
     return $dia."-".$mes."-".$anio; 
@@ -64,4 +65,9 @@ function sumarColumnas ($debe,$haber,$tipoCuenta){
 		return $totalHaber - $totalDebe;
 		}
 	}
+
+function redondeado ($numero, $decimales) {
+$factor = pow(10, $decimales);
+return (round($numero*$factor)/$factor); }
+
 ?>
