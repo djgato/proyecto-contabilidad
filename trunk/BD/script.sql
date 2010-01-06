@@ -29,6 +29,8 @@ CREATE  TABLE IF NOT EXISTS `proyecto_contabilidad`.`CUENTA` (
   PRIMARY KEY (`id_cuenta`) )
 ENGINE = InnoDB;
 
+INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('1','Banco','Activo');
+INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('2','Capital','Pasivo');
 
 -- -----------------------------------------------------
 -- Table `proyecto_contabilidad`.`MOVIMIENTO`
