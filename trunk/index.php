@@ -1,3 +1,16 @@
+<?php
+session_start();
+include("conexion.php");
+$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'banco'");
+$res = $usuario->extraer_registro($res);
+$id_banco = $res['id_cuenta'];
+$res = $usuario->consulta("SELECT * FROM movimiento WHERE id_cuenta_movimiento='$id_banco'");
+$res = $usuario->extraer_registro($res);
+if ($res){
+	$_SESSION['iniciado']="iniciado";
+	header("location: libroDiario.php");
+	}
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -38,7 +51,13 @@
     <td class="shadow_left">&nbsp;</td>
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td class="body_content" align="center"><strong>Este es le home! si se nos ocurre algo lo ponemos aquí!</strong> <br />
+        <td class="body_content" align="center"><strong>BIENVENIDO</strong> <br />
+         El programa precisa valores bases para su optimo funcionameinto.<br />
+         Por favor, introduzca el monto de banco con el cual desea iniciar su contabilidad:<br />
+         <form action="datosIniciales.php" method="post">
+         Monto: <input name="monto" id="monto" type="text" /> | <input name="enviar" type="submit" value="Aceptar" />
+         <input name="id" id="id" type="hidden" value="<?php echo $id_banco?>"/>
+         </form>
           <br /></td>
       </tr>
     </table></td>

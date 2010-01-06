@@ -55,7 +55,7 @@
 //--------------------------------CODIGO INVENTARIO----------------------------
 		?>
         </select>
-        <div id="libroInventario"><b>Inventario</b></div>
+        <div id="libroInventario"><b></b></div>
 	</table>
 	</strong> <br />
           <br /></td>

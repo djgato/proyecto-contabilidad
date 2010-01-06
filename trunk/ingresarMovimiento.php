@@ -110,7 +110,9 @@
 					<option value="30">30</option>
 					<option value="31">31</option>
 				</select>			
-	</td></tr></table>
+	</td>
+    <td> | <input name="vaciar" type="button" value="Limpiar BD" onclick="limpiarBD()"/></td>
+    </tr></table>
         <br /><strong>Acciones Disponibles: 
         <select name="accion" id="accion" onchange="consultarAccion()" >
         	<option value='-' >---Seleccione una Accion---</option>
@@ -119,7 +121,7 @@
             <option value='prestamo' >Solicitud de Prestamo</option>
             <option value='cobro' >Cobro de Cuenta</option>
             <option value='pago' >Pago de Cuenta</option>
-            <option value='pago' >Cierre de Mes</option>
+            <option value='cierre' >Cierre de Mes</option>
         </select></strong><br />
           <br />
           <div id="Seleccion"><strong></strong></div>
