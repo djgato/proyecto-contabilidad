@@ -1,3 +1,11 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<script type="text/javascript" src="js/prototype-1.6.0.3.js"> </script>
+<script type="text/javascript" src="js/conta_JS.js"> </script>
+</head>
+<body onload="redireccionarLD()">
 <?php
 include ("conexion.php");
 include ("funciones.php");
@@ -360,3 +368,5 @@ else if ($operacion == "ventaProducto"){
 	$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Existencia','$unidades_restantes','$total_exist','$precio_unitario','$id_finventario')");
 	}
 ?>
+</body>
+</html>
