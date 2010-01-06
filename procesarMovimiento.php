@@ -174,23 +174,25 @@ else if ($operacion == "compraProducto"){
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------	
 	//Ahora paso a registrar la compra en la ficha de inventario!
 	//creo la ficha de inventario
+	
+	if ($_POST['product'] == "n"){//si el producto es nuevo le creo II
+			$usuario->consulta("INSERT INTO ficha_inventario (id_finventario,descripcion,fecha_inventario,id_producto_finventario) VALUES 	('','Inventario Inicial','$fecha','$id_producto');");
+	$id_finventario2 = $usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
+	$id_finventario2 = $id_finventario2['id_finventario'];
+		$usuario->consulta("INSERT INTO transaccion (id_transaccion,id_finventario_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad) VALUES 	('','$id_finventario2','Existencia','0','0','0');");
+		}
+	$id_finventario = $usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
+	$id_finventario = $id_finventario['id_finventario'];
+	$exist = $usuario->extraer_registro($usuario->consulta("SELECT * FROM transaccion WHERE tipo_transaccion='Existencia' AND id_finventario_transaccion= '$id_finventario' ORDER BY  id_transaccion DESC Limit 1"));	
 	$usuario->consulta("INSERT INTO ficha_inventario (id_finventario,descripcion,fecha_inventario,id_producto_finventario) VALUES 	('','Compra','$fecha','$id_producto');");
 	$id_finventario = $usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
 	$id_finventario = $id_finventario['id_finventario'];
-	$exist = $usuario->consulta("SELECT total_transaccion,unidades_transaccion FROM transaccion WHERE tipo_transaccion = 'Existencia' ORDER BY id_transaccion DESC Limit 1");
 	$unidades = $_POST['cant'];
 	$costo_unitario = $_POST['cu'];
 	$total = $_POST['cant'] * $_POST['cu'];
 	//ingreso la transaccion de compra
-	if ($_POST['product'] == "n"){//si el producto es nuevo le creo II
-			$usuario->consulta("INSERT INTO ficha_inventario (id_finventario,descripcion,fecha_inventario,id_producto_finventario) VALUES 	('','Existencia','$fecha','$id_producto');");
-	$id_finventario2 = $usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
-	$id_finventario2 = $id_finventario2['id_finventario'];
-		$usuario->consulta("INSERT INTO transaccion (id_transaccion,id_finventario_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad) VALUES 	('','$id_finventario2','II','0','0','0');");
-		}
-	$usuario->consulta("INSERT INTO transaccion (id_transaccion,id_finventario_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad) VALUES 	('','$id_finventario','Compra','$unidades','$total','$costo_unitario');");
+	$usuario->consulta("INSERT INTO transaccion (id_transaccion,id_finventario_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad) VALUES 	('','$id_finventario','Entrada','$unidades','$total','$costo_unitario');");
 	if ($exist){
-		$exist = $usuario->extraer_registro($exist);
 		$unidades = $unidades + $exist['unidades_transaccion'];
 		$total = $total + $exist['total_transaccion'];
 		$costo_unitario = $total/$unidades;
@@ -279,7 +281,7 @@ else if ($operacion == "ventaProducto"){
 	$cu=$_POST['CU'];
 	$total = $cant*$cu;
 	$iva= $total*(0.12);
-	$nombreProd=$_POST['nombreProd'];
+	$nombreProd = $_POST['nombreProd'];
 	$nombreCuenta='Venta '.$nombreProd;
 	//inserto mi nueva cuenta Venta Producto ...
 	$res=$usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE '$nombreCuenta'");
@@ -338,13 +340,15 @@ else if ($operacion == "ventaProducto"){
 			$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES ('$id_porCobrar','$id_ldiario','$monto_credito','d');");
 	}
 	//Inventario
-	$res=$usuario->consulta("SELECT * from producto WHERE nombre_producto='$nombreProd'");
+	$nombreProd = $_POST['nombreProd'];
+	$res = $usuario->consulta("SELECT * FROM producto WHERE nombre_producto LIKE '$nombreProd'");
 	$producto = $usuario->extraer_registro($res);
 	$id_prod = $producto["id_producto"];
-	$res =  $usuario->consulta("SELECT * FROM ficha_inventario WHERE id_producto_finventario= '$id_prod'");
+	
 	$id_inv =$usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
 	$id_inv = $id_inv['id_finventario'];
-	$ultima_existencia = $usuario->extraer_registro($usuario->consulta("SELECT * FROM transaccion WHERE tipo_transaccion='Existencia' AND id_finventario_transaccion= '$id_inv' ORDER BY  id_transaccion DESC Limit 1"));
+	$ultima_existencia = $usuario->extraer_registro($usuario->consulta("SELECT * FROM transaccion WHERE tipo_transaccion = 'Existencia' AND id_finventario_transaccion = '$id_inv' ORDER BY  id_transaccion DESC Limit 1"));
+
 	$unidades_restantes = $ultima_existencia["unidades_transaccion"] - $cant; //cantidad en existencia
 	$precio_unitario = $ultima_existencia["precio_unidad"]; //costo tanto para la salida como para la existencia
 	$total_transaccion = $cant * $precio_unitario; // total de la salida
@@ -352,7 +356,7 @@ else if ($operacion == "ventaProducto"){
 	$usuario->consulta("INSERT INTO ficha_inventario (id_finventario,descripcion,fecha_inventario,id_producto_finventario) VALUES 	('','Venta','$fecha','$id_prod');");
 	$id_finventario = $usuario->extraer_registro($usuario->consulta("SELECT id_finventario FROM ficha_inventario ORDER BY  id_finventario DESC Limit 1"));
 	$id_finventario = $id_finventario['id_finventario'];
-	$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Salida','$cant','$total_transaccion','$precio_unitario','$id_finventario'");
-	$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Existencia','$unidades_restantes','$total_exist','$precio_unitario,'$id_finventario'");
+	$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Salida','$cant','$total_transaccion','$precio_unitario','$id_finventario')");
+	$usuario->consulta ("INSERT INTO transaccion (id_transaccion,tipo_transaccion,unidades_transaccion,total_transaccion,precio_unidad,id_finventario_transaccion) VALUES ('','Existencia','$unidades_restantes','$total_exist','$precio_unitario','$id_finventario')");
 	}
 ?>
