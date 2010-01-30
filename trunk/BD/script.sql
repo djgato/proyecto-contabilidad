@@ -102,7 +102,7 @@ CREATE  TABLE IF NOT EXISTS `proyecto_contabilidad`.`TRANSACCION` (
   `id_finventario_transaccion` INT NOT NULL ,
   `tipo_transaccion` VARCHAR(45) NOT NULL ,
   `unidades_transaccion` INT NOT NULL ,
-  `total_transaccion` FLOAT NOT NULL ,
+  `total_transaccion` INT NOT NULL ,
   `precio_unidad` FLOAT NOT NULL ,
   PRIMARY KEY (`id_transaccion`),
   CONSTRAINT `fk_FICHA_INVENTARIO_TRANSACCION`

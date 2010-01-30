@@ -29,16 +29,17 @@ function consultarMovimiento ($id_ldiario, $usuario){
 	return $datos;
 }
 
-function balanceo ($tipoCuenta){
-	$res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = ".$tipoCuenta."");
-	$cuentas[] = "";
+function balanceo ($tipoCuenta, $usuario, $usuario2){
+	$res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = '".$tipoCuenta."'");
+	$cuentas[] = NULL;
 	while($cuenta=$usuario->extraer_registro($res)){
-	$debe[] = "";
-	$haber[] = "";
+	$debe[] = list();
+	$haber[] = list();
+	$resultado[] = array();
 	$id_cuenta = $cuenta["id_cuenta"];
 	$nombre_cuenta = $cuenta["nombre_cuenta"];
-	$res1 =  $usuario->consulta("SELECT * FROM movimiento WHERE id_cuenta_movimiento = $id_cuenta");
-		while($mov = $usuario->extraer_registro($res1)){
+	$res1 =  $usuario2->consulta("SELECT * FROM movimiento WHERE id_cuenta_movimiento = $id_cuenta");
+		while($mov = $usuario2->extraer_registro($res1)){
 			if ($mov["columna_movimiento"]=="d"){
 				$debe[]= $mov["monto_movimiento"];
 				}
@@ -46,9 +47,13 @@ function balanceo ($tipoCuenta){
 				$haber[]= $mov["monto_movimiento"];
 				}
 		}
+		$total = 0;
 		$total = sumarColumnas ($debe,$haber,$tipoCuenta);
+		$resultado[] =$cuenta['nombre_cuenta'].'  '.$total;
+	}
+	return $resultado;
 }
-}
+
 function sumarColumnas ($debe,$haber,$tipoCuenta){
 	$totalDebe =0;
 	$totalHaber =0;
