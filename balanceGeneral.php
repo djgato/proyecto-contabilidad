@@ -52,7 +52,7 @@
 							</tr>';
 							$act = balanceo ("Activo", $usuario, $usuario2);
 							while( list($posicion1,$valor1) = each($act)){
-								echo '<tr><td>'.$valor1.'</td></tr>.';
+								echo '<tr><td>'.$valor1.'</td></tr>';
 							}
 							echo '</table>
 						</td>
@@ -62,7 +62,7 @@
 							<td align="center">PASIVOS</td></tr>';
 							$pas = balanceo ("Pasivo", $usuario, $usuario2);	
 							while( list($posicion1,$valor1) = each($pas)){
-								echo '<tr><td>'.$valor1.'</td></tr>.';
+								echo '<tr><td>'.$valor1.'</td></tr>';
 							}
 							echo '</table>
 						</td>
