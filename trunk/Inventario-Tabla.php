@@ -20,9 +20,9 @@ if ($producto_nombre != "null"){
 		while ($inventario = $usuario->extraer_registro($res1)){
 			$inventario_fecha = $inventario ["fecha_inventario"];
 			list($año,$mes,$dia)=explode("-",$inventario_fecha);
-			if (!(in_array($año,$años))
+			if (!(in_array($año,$años)))
 				$años [] = $año;
-			if (!(in_array($mes,$meses))
+			if (!(in_array($mes,$meses)))
 				$meses[] = $mes;
 		}
 			echo '<tr><td>'.count($años).'</td></tr>';
