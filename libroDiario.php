@@ -59,7 +59,11 @@
 					echo "<tr><td COLSPAN=4><hr /></td></tr>";
 				}
           ?>
+            <tr> <td> <input name="CalculoDep" type="button" value="Calculo de Depreciacion" onclick="consultaDepCierreMes()"/></td></tr>
+            <tr> <td> <input name="CalculoDep" type="button" value="Calculo Costo de Venta" onclick="consultaCostoVentaCierreMes()"/></td></tr>
+            <tr> <td> <input name="CalculoDep" type="button" value="Calculo Iva por Pagar" onclick="calculoIvaPorPagar()"/></td></tr>
           </table>
+          <div id="depCierreMes"></div>
           </strong> <br />
           <br /></td>
       </tr>
