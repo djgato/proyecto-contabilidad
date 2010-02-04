@@ -39,6 +39,8 @@
     <td class="main_content_box"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td class="body_content" align="center"><strong>
+        <div id="balanceEstado">
+        <div align="right"><a href="#" onclick="cargarEstadoResultados()">Estado de Resuldatos</a></div>
          <?php  
 		        include ("conexion.php");
 				include ("funciones.php");
@@ -69,8 +71,10 @@
 						</tr>
 						</table>';
           ?>
+          </div>
         </strong> <br />
           <br /></td>
+          
       </tr>
     </table></td>
     <td class="shadow_right">&nbsp;</td>
