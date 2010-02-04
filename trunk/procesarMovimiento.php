@@ -296,6 +296,7 @@ else if ($operacion == "cierre"){
 	$usuario2 = new Servidor_Base_Datos($servidor,"root",$pass,$base_datos);
 		//saco el monto de impuesto y los gastos por sueldos y por servicios
 	$impuesto = $_POST['imp'];
+	setcookie("imp",$impuesto);
 	$sueldos = $_POST['sueldos'];
 	$sueldos = (int)$sueldos;
 	$servicios = $_POST['servicios'];
