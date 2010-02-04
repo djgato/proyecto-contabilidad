@@ -63,7 +63,7 @@ $res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Ingreso'");
 	echo "</tr><tr>";
 	echo "<td>Gastos Ventas y Administrativos</td><td></td><td></td>";
 	echo "</tr>";
-	$res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Egreso' AND nombre_cuenta NOT LIKE 'Costo Venta%'");
+	$res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Egreso' AND nombre_cuenta NOT LIKE 'Costo Venta%'  AND nombre_cuenta NOT LIKE 'ISLR'  AND nombre_cuenta NOT LIKE 'Compra%'");
 	while($cuenta=$usuario->extraer_registro($res)){
 	unset($debe);
 	unset($haber);
@@ -91,8 +91,11 @@ $res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Ingreso'");
 	$porcentaje2 = (int)$porcentaje;
 	$porcentaje2 = ($porcentaje2/100);
 	$resultado4 = $resultado * $porcentaje2;
+	$resultado5 = (int)$resultado4 ;
+	$isl = $resultado - $resultado4;
+	$isl = (int)$isl;
 	echo "<tr><td>ISLR ".$porcentaje." %</td><td></td><td>(".$resultado4.")</td></tr>";
-	echo "<tr><td>Utilidad neta despues ISLR </td><td></td><td>".($resultado - $resultado4)."</td></tr>";
+	echo "<tr><td>Utilidad neta despues ISLR </td><td></td><td>".$isl."</td></tr>";
 	echo "</table>";
 				   }
 ?>
