@@ -1,6 +1,6 @@
 <?php 
 include ("conexion.php");
-$res = $usuario->consulta("SELECT nombre_cuenta,id_cuenta FROM cuenta WHERE nombre_cuenta LIKE '%Cuentas por Pagar%'");
+$res = $usuario->consulta("SELECT nombre_cuenta,id_cuenta FROM cuenta WHERE nombre_cuenta LIKE '%Cuentas por Pagar%' OR nombre_cuenta LIKE 'ISLR por Pagar'");
 echo "<strong>Cuentas por Pagar: </strong>
 		<select name='cuent' id='cuent' onchange='consultarPago()' >
 		<option value='-' >---Seleccione una Opcion---</option>";

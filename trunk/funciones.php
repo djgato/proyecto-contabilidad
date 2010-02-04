@@ -54,8 +54,10 @@ function balanceo ($tipoCuenta, $usuario, $usuario2){
 		}
 		$total = 0;
 		$total = sumarColumnas ($debe,$haber,$tipoCuenta);
+		IF ($total != 0){
 		$resultado[] = $cuenta['nombre_cuenta'].'      '.$total;
 		$totalTipoCuenta = $totalTipoCuenta + $total;
+		}
 	}
 	$resultado[] = '............TOTAL...........';
 	$resultado[] = $totalTipoCuenta;
@@ -133,7 +135,7 @@ function calcularISLR ($usuario, $porcentaje, $usuario2){
 	return $resultado;
 }
 
-function calcularUND ($usuario, $usuario2){
+function calcularUND ($usuario, $usuario2, $fecha){
 	$usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
 $id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
 $id_ldiario = $id['id_ldiario'];
@@ -160,15 +162,15 @@ $id_ldiario = $id['id_ldiario'];
 				}
 		}
 		$total = 0;
-		$total = sumarColumnas ($debe,$haber,'Activo');
+		$total = sumarColumnas ($debe,$haber,'Pasivo');
 		$resultado = $resultado + $total;
+		if ($total !=0)
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_cuenta','$id_ldiario','$total','d');");
 	}
 	
 	$res = $usuario->consulta("SELECT * FROM cuenta WHERE tipo_cuenta = 'Egreso'");
 	$debe[] = "";
 	$haber[] = "";
-	$resultado = 0;
 	$totalTipoCuenta = 0; //monto total de activo o de pasivo
 	while($cuenta=$usuario->extraer_registro($res)){
 	unset($debe);
@@ -187,8 +189,9 @@ $id_ldiario = $id['id_ldiario'];
 				}
 		}
 		$total = 0;
-		$total = sumarColumnas ($debe,$haber,'Pasivo');
+		$total = sumarColumnas ($debe,$haber,'Activo');
 		$resultado = $resultado - $total;
+		if ($total !=0)
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_cuenta','$id_ldiario','$total','h');");
 	}
 	
@@ -202,16 +205,37 @@ $id_ldiario = $id['id_ldiario'];
 		$res = $usuario->extraer_registro($res);
 		$idGanPer = $res['id_cuenta'];
 		}
+		if ($resultado > 0)
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idGanPer','$id_ldiario','$resultado','h');");
+		else {
+		$resultado2 = $resultado * (-1);
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idGanPer','$id_ldiario','$resultado2','d');");
+		}
+	
+		$usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
+$id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
+$id_ldiario = $id['id_ldiario'];
 		$idUND =0;
+		
 $res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'UND'");
 	if ($res = $usuario->extraer_registro($res))
-		$idGanPer = $res['id_cuenta'];
+		$idUND = $res['id_cuenta'];
 	else {
 		$usuario->consulta("INSERT INTO cuenta (id_cuenta, nombre_cuenta, tipo_cuenta) VALUES ('','UND','Pasivo')");
 		$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'UND'");
 		$res = $usuario->extraer_registro($res);
-		$idGanPer = $res['id_cuenta'];
+		$idUND = $res['id_cuenta'];
 		}
+		if ($resultado > 0){
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idGanPer','$id_ldiario','$resultado','d');");
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idUND','$id_ldiario','$resultado','h');");
+		}
+		else {
+			$resultado2 = $resultado * (-1);
+			$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idGanPer','$id_ldiario','$resultado2','h');");
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idUND','$id_ldiario','$resultado2','d');");
+			}
+return $resultado;
 }
 
 

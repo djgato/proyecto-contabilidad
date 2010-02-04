@@ -1,5 +1,5 @@
 <?php 
-include('conexion.php');
+require_once('conexion.php');
 
 
 $resAux =  $usuario->consulta("SELECT * FROM cuenta WHERE nombre_cuenta LIKE 'Compra%' ");
