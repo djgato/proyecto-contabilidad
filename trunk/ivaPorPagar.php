@@ -57,7 +57,7 @@ if ($hayAlgunTipoDeIva = $usuario->extraer_registro($resAux)){
 	
 	
 	//---ASEGURO QUE LA CUENTA IVA POR PAGAR NO EXISTA PA NO CREARLA TWICE----------
-	$resAux2 = $usuario->consulta("SELECT * FROM cuenta WHERE nombre_cuenta = 'IVA por Pagar' ");
+	$resAux2 = $usuario->consulta("SELECT * FROM cuenta WHERE nombre_cuenta LIKE 'IVA por Pagar' ");
 	if (!($IvaPorPagar = $usuario->extraer_registro($resAux2)))
 		$res3 = $usuario->consulta("INSERT INTO cuenta (id_cuenta, nombre_cuenta, tipo_cuenta) VALUES ('', 'IVA por Pagar', 'Pasivo')");
 	//------------------------------------------------------------------------------	

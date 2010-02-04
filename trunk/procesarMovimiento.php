@@ -5,7 +5,7 @@
 <script type="text/javascript" src="js/prototype-1.6.0.3.js"> </script>
 <script type="text/javascript" src="js/conta_JS.js"> </script>
 </head>
-<body onload="redireccionarLD()">
+<body onLoad="redireccionarLD()">
 <?php
 include ("conexion.php");
 include ("funciones.php");
@@ -283,7 +283,138 @@ else if ($operacion == "solicitudPrestamo"){
 	//genero los movimientos!
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$monto','h');");
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_cuenta','$id_ldiario','$monto','d');");		
-		}	
+		}
+//-------------------------------------------------------------------------------------------------------------------------------------------
+
+		//Verifico si es cierre de mes!
+else if ($operacion == "cierre"){
+	$usuario2 = new Servidor_Base_Datos($servidor,"root",$pass,$base_datos);
+		//saco el monto de impuesto y los gastos por sueldos y por servicios
+	$impuesto = $_POST['imp'];
+	$sueldos = $_POST['sueldos'];
+	$sueldos = (int)$sueldos;
+	$servicios = $_POST['servicios'];
+	$servicios = (int)$servicios;
+	$totalGastosBanco = $servicios + $sueldos; //lo que le quito a banco al generar gastos 
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'banco'");
+	$res = $usuario->extraer_registro($res);
+	$id_banco = $res['id_cuenta'];
+	//----prestamos por pagar ----------
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Prestamos por Pagar'");
+	if ($res = $usuario->extraer_registro($res)){
+		$pagoBanco =0;
+		$id_prestamo = $res['id_cuenta'];
+		$id_prestamo = (int) $id_prestamo; // ejm Dep. Ac. Vehiculo
+		$id_Intereses_prestamo = $id_prestamo - 1; // Gastos por Dep. Vehiculo		
+		$res2 = $usuario->consulta("SELECT id_gasto_asociado FROM gasto_cuenta WHERE id_cuenta_gasto = '$id_prestamo'");
+		while ($gastoAsociado = $usuario->extraer_registro($res2)){
+			$idGastoAsociado = $gastoAsociado["id_gasto_asociado"];
+			
+			$res3 = $usuario->consulta("SELECT monto_gasto, pagos_restantes FROM gasto_asociado WHERE id_gasto_asociado = '$idGastoAsociado' ");
+			while ($datosGastosAsociado = $usuario->extraer_registro($res3)){
+				$montoGasto = $datosGastosAsociado["monto_gasto"];
+				$restantesGasto = $datosGastosAsociado["pagos_restantes"];
+				$montoGasto = (int)$montoGasto;
+				$restantesGasto = (int) $restantesGasto;
+				$restantesGasto = $restantesGasto - 1;
+				
+				$res4 = $usuario->consulta("UPDATE gasto_asociado SET pagos_restantes = '$restantesGasto' WHERE  id_gasto_asociado ='$idGastoAsociado'");
+				$pagoBanco = $pagoBanco + $montoGasto;
+				$res5 = $usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento, id_ldiario_movimiento, monto_movimiento, columna_movimiento) VALUES ('$id_prestamo', '$id_ldiario', '$montoGasto', 'd')");
+			}
+		}
+		
+		$res2 = $usuario->consulta("SELECT id_gasto_asociado FROM gasto_cuenta WHERE id_cuenta_gasto = '$id_Intereses_prestamo' ");
+		while ($gastoAsociado = $usuario->extraer_registro($res2)){
+			$idGastoAsociado = $gastoAsociado["id_gasto_asociado"];
+			
+			$res3 = $usuario->consulta("SELECT monto_gasto, pagos_restantes FROM gasto_asociado WHERE id_gasto_asociado = '$idGastoAsociado' ");
+			while ($datosGastosAsociado = $usuario->extraer_registro($res3)){
+				$montoGasto = $datosGastosAsociado["monto_gasto"];
+				$restantesGasto = $datosGastosAsociado["pagos_restantes"];
+				$montoGasto = (int)$montoGasto;
+				$restantesGasto = (int) $restantesGasto;
+				$restantesGasto = $restantesGasto - 1;
+				
+				$res4 = $usuario->consulta("UPDATE gasto_asociado SET pagos_restantes = '$restantesGasto' WHERE  id_gasto_asociado ='$idGastoAsociado'");
+				$pagoBanco = $pagoBanco + $montoGasto;
+				$res5 = $usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento, id_ldiario_movimiento, monto_movimiento, columna_movimiento) VALUES ('$id_Intereses_prestamo', '$id_ldiario', '$montoGasto', 'd')");
+			}
+		}
+		$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento, id_ldiario_movimiento, monto_movimiento, columna_movimiento) VALUES ('$id_banco', '$id_ldiario', '$pagoBanco', 'h')");
+		}
+	
+	
+	
+	
+	//------------------------------------------------------------------------------------------
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Sueldos y Salarios'");
+	if ($res = $usuario->extraer_registro($res))
+		$id_sueldos = $res['id_cuenta'];
+	else {
+		$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('','Sueldos y Salarios','Egreso');");
+		}
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Sueldos y Salarios'");
+	$res = $usuario->extraer_registro($res);
+	$id_sueldos = $res['id_cuenta'];
+	
+	//------------------------------------------------------------------------------------------------
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Gastos por Servicios'");
+	if ($res = $usuario->extraer_registro($res))
+		$id_sueldos = $res['id_cuenta'];
+	else {
+		$res = $usuario->consulta("INSERT INTO cuenta (id_cuenta,nombre_cuenta,tipo_cuenta) VALUES 	('','Gastos por Servicios','Egreso');");
+		}
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Gastos por Servicios'");
+	$res = $usuario->extraer_registro($res);
+	$id_servicios = $res['id_cuenta'];
+	
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_sueldos','$id_ldiario','$sueldos','d');");
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_servicios','$id_ldiario','$servicios','d');");
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$totalGastosBanco','h');");		
+		
+	$islr = calcularISLR ($usuario, $impuesto, $usuario2); //calculo el islr
+	//creo las cuentas de egreso ISLR y el pasivo ISLR por pagar
+	$idISLR = 0;
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'ISLR'");
+	if ($res = $usuario->extraer_registro($res))
+		$idISLR = $res['id_cuenta'];
+	else {
+		$usuario->consulta("INSERT INTO cuenta (id_cuenta, nombre_cuenta, tipo_cuenta) VALUES ('','ISLR','Egreso')");
+		$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'ISLR'");
+		$res = $usuario->extraer_registro($res);
+		$idISLR = $res['id_cuenta'];
+		}
+	$idISLRporPagar = 0;
+	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'ISLR por Pagar'");
+	if ($res = $usuario->extraer_registro($res))
+		$idISLRporPagar = $res['id_cuenta'];
+	else {
+		$usuario->consulta("INSERT INTO cuenta (id_cuenta, nombre_cuenta, tipo_cuenta) VALUES ('','ISLR por Pagar','Pasivo')");
+		$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'ISLR por Pagar'");
+		$res = $usuario->extraer_registro($res);
+		$idISLRporPagar = $res['id_cuenta'];
+		}
+		
+		$usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
+$id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
+$id_ldiario = $id['id_ldiario'];
+	//genero los movimientos!
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idISLR','$id_ldiario','$islr','d');");
+	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idISLRporPagar','$id_ldiario','$islr','h');");		
+		
+		//llamo a la funcion que cruza ingresos contra egresos y saca la UND etc ...
+		
+		$und = calcularUND ($usuario, $usuario2);
+		
+		$usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
+$id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
+$id_ldiario = $id['id_ldiario'];
+		
+		
+}
+		
+//--------------------------------------------------------------------------------------------------------------------------------------------
 else if ($operacion == "ventaProducto"){
 	$cant=$_POST['cant'];
 	$cu=$_POST['CU'];
