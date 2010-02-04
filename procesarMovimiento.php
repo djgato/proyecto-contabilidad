@@ -288,6 +288,11 @@ else if ($operacion == "solicitudPrestamo"){
 
 		//Verifico si es cierre de mes!
 else if ($operacion == "cierre"){
+	include ("ivaPorPagar.php");
+	include ("calculoCostoDeVenta.php");
+	include ("calculoDepreciacionCierreMes.php");
+	
+	
 	$usuario2 = new Servidor_Base_Datos($servidor,"root",$pass,$base_datos);
 		//saco el monto de impuesto y los gastos por sueldos y por servicios
 	$impuesto = $_POST['imp'];
@@ -299,6 +304,7 @@ else if ($operacion == "cierre"){
 	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'banco'");
 	$res = $usuario->extraer_registro($res);
 	$id_banco = $res['id_cuenta'];
+	
 	//----prestamos por pagar ----------
 	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Prestamos por Pagar'");
 	if ($res = $usuario->extraer_registro($res)){
@@ -345,7 +351,9 @@ else if ($operacion == "cierre"){
 		}
 	
 	
-	
+	$usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
+$id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
+$id_ldiario = $id['id_ldiario'];
 	
 	//------------------------------------------------------------------------------------------
 	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'Sueldos y Salarios'");
@@ -374,6 +382,7 @@ else if ($operacion == "cierre"){
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$id_banco','$id_ldiario','$totalGastosBanco','h');");		
 		
 	$islr = calcularISLR ($usuario, $impuesto, $usuario2); //calculo el islr
+	if ($islr > 0){
 	//creo las cuentas de egreso ISLR y el pasivo ISLR por pagar
 	$idISLR = 0;
 	$res = $usuario->consulta("SELECT id_cuenta FROM cuenta WHERE nombre_cuenta LIKE 'ISLR'");
@@ -402,15 +411,10 @@ $id_ldiario = $id['id_ldiario'];
 	//genero los movimientos!
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idISLR','$id_ldiario','$islr','d');");
 	$usuario->consulta("INSERT INTO movimiento (id_cuenta_movimiento,id_ldiario_movimiento,monto_movimiento,columna_movimiento) VALUES 	('$idISLRporPagar','$id_ldiario','$islr','h');");		
-		
+	}
 		//llamo a la funcion que cruza ingresos contra egresos y saca la UND etc ...
 		
-		$und = calcularUND ($usuario, $usuario2);
-		
-		$usuario->consulta("INSERT INTO libro_diario (id_ldiario, fecha_ldiario) VALUES ('','$fecha')");
-$id = $usuario->extraer_registro($usuario->consulta("SELECT id_ldiario FROM libro_diario ORDER BY  id_ldiario DESC Limit 1"));
-$id_ldiario = $id['id_ldiario'];
-		
+		$und = calcularUND ($usuario, $usuario2, $fecha);
 		
 }
 		
